@@ -4,6 +4,7 @@ This repository contains the complete pipeline used for the CAFA-6 Protein Funct
 The proposed approach leverages precomputed ESM-2 (650M) protein embeddings, wide MLP classifiers, and an IA-aware ensemble strategy, followed by CAFA-compliant post-processing.
 
 ## 1. Repository Structure
+```text
 ├── preprocessing/
 │   ├── embedding-cafa6.ipynb
 │   ├── go-selected-cafa6.ipynb
@@ -36,8 +37,6 @@ Python ≥ 3.9
 PyTorch ≥ 2.0
 
 CUDA-enabled GPU (recommended for training)
-
-FAISS (optional, for similarity-based analysis)
 
 Install dependencies
 `pip install torch numpy pandas scikit-learn tqdm obonet`
@@ -309,7 +308,7 @@ Run notebooks in the following order:
 `submission/predict.ipynb`
 `submission/submit.ipynb`
 
-Notes
+**Notes**
 
 Path configuration notice:
 The file paths used in the notebooks are provided as examples and must be adjusted to match your local directory structure before execution.
