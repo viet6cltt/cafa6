@@ -28,6 +28,7 @@ The proposed approach leverages precomputed ESM-2 (650M) protein embeddings, wid
 │   └── processed/
 │
 └── README.md
+```
 
 ## 2. Environment Setup
 Requirements
