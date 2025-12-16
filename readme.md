@@ -31,7 +31,7 @@ The proposed approach leverages precomputed ESM-2 (650M) protein embeddings, wid
 ```
 
 ## 2. Environment Setup
-Requirements
+**Requirements**
 
 Python ≥ 3.9
 
@@ -39,7 +39,7 @@ PyTorch ≥ 2.0
 
 CUDA-enabled GPU (recommended for training)
 
-Install dependencies
+**Install dependencies**
 `pip install torch numpy pandas scikit-learn tqdm obonet`
 
 ## 3. Preprocessing Pipeline
@@ -50,28 +50,28 @@ All preprocessing steps are executed once and reused across experiments.
 
 File: `preprocessing/embedding-cafa6.ipynb`
 
-Purpose:
+**Purpose:**
 
 Load precomputed ESM-2 650M embeddings
 
 Avoid redundant and expensive embedding extraction
 
-Important Note:
+**Important Note:**
 
 This pipeline does NOT retrain or re-run ESM-2.
 Precomputed embeddings are directly loaded to significantly reduce runtime.
 
-Input:
+**Input:**
 
 Precomputed ESM-2 embeddings (dimension = 1280)
 
-Output:
+**Output:**
 
 `train_embeds.npy`
 
 `test_embeds.npy`
 
-How to run:
+**How to run:**
 
 `jupyter notebook preprocessing/embedding-cafa6.ipynb`
 
@@ -79,7 +79,7 @@ How to run:
 
 File: `preprocessing/go-selected-cafa6.ipynb`
 
-Purpose:
+**Purpose:**
 
 Load GO hierarchy (go-basic.obo)
 
@@ -87,13 +87,13 @@ Propagate GO annotations to parent terms
 
 Construct label vocabularies under different coverage settings
 
-Label Sets:
+**Label Sets:**
 
 C95: ~6,413 most frequent GO terms
 
 C99: ~15,000 GO terms (covering most annotated labels)
 
-Output:
+**Output:**
 
 Label vocabularies for C95 and C99
 
@@ -107,7 +107,7 @@ How to run:
 
 File: `preprocessing/split_data.ipynb`
 
-Purpose:
+**Purpose:**
 
 Split proteins into training and validation sets
 
@@ -115,11 +115,11 @@ Prevent sequence similarity leakage
 
 Ensure consistent splits across C95 and C99
 
-Method:
+**Method:**
 
 Group-based splitting using cluster information
 
-Output:
+**Output:**
 
 Train / validation indices shared by both models
 
@@ -131,13 +131,13 @@ How to run:
 
 File: `preprocessing/taxon.ipynb`
 
-Purpose:
+**Purpose:**
 
 Process protein taxonomy metadata
 
 Reduce noise from rare taxa
 
-Key Steps:
+**Key Steps:**
 
 Map taxon IDs to species level
 
@@ -145,7 +145,7 @@ Keep the top 134 most frequent taxa
 
 Map all remaining taxa to a default category
 
-Output:
+**Output:**
 
 Taxonomy index per protein
 
@@ -163,21 +163,21 @@ Two independent models are trained to handle different GO label distributions.
 
 File: `training/training_c95.ipynb`
 
-Purpose:
+**Purpose:**
 
 Train a stable classifier for frequent GO terms
 
-Characteristics:
+**Characteristics:**
 
 Lower false positive rate
 
 Strong performance on common biological functions
 
-Output:
+**Output:**
 
 Best model checkpoint saved to models/c95/
 
-How to run:
+**How to run:**
 
 `jupyter notebook training/training_c95.ipynb`
 
@@ -185,33 +185,33 @@ How to run:
 
 File: `training/training_c99.ipynb`
 
-Purpose:
+**Purpose:**
 
 Train a classifier covering rare and high-IA GO terms
 
-Characteristics:
+**Characteristics:**
 
 Higher recall on rare labels
 
 Requires stricter post-processing
 
-Output:
+**Output:**
 
 Best model checkpoint saved to models/c99/
 
-How to run:
+**How to run:**
 
 `jupyter notebook training/training_c99.ipynb`
 
 Model Architecture (C95 & C99)
 
-Input:
+**Input:**
 
 Protein embedding: 1280
 
 Taxonomy embedding: 64
 
-Network:
+**Network:**
 
 MLP: 4096 → 4096
 
@@ -219,7 +219,7 @@ GELU activation
 
 Dropout + LayerNorm
 
-Training:
+**Training:**
 
 Loss: Asymmetric Loss
 
@@ -234,13 +234,13 @@ Model selection metric: IA-weighted F-max
 
 File: `submission/predict.ipynb`
 
-Purpose:
+**Purpose:**
 
 Run inference using both trained models
 
 Align C95 predictions into the C99 label space
 
-Output:
+**Output:**
 
 Raw probability scores for each protein–GO pair
 
@@ -252,20 +252,20 @@ How to run:
 
 Implemented in: `submission/predict.ipynb`
 
-Strategy:
+**Strategy:**
 
-Low IA: prioritize C95 predictions
+*Low IA:* prioritize C95 predictions
 
-Medium IA: conditional combination
+*Medium IA:* conditional combination
 
-High IA: trust C99 predictions only when confident
+*High IA:* trust C99 predictions only when confident
 
 This strategy reduces noisy predictions on rare labels while preserving recall.
 
 ## 6. Post-processing and Submission
 ### 6.1 Post-processing
 
-Steps:
+**Steps:**
 
 No manual GO propagation (CAFA auto-repair enabled)
 
@@ -279,7 +279,7 @@ Clip scores and round to 3 decimal places
 
 File: submission/submit.ipynb
 
-Output Format:
+**Output Format:**
 
 Protein_ID    GO_term    score
 
@@ -290,7 +290,7 @@ No header
 
 Directly uploadable to CAFA-6
 
-How to run:
+**How to run:**
 
 `jupyter notebook submission/submit.ipynb`
 
